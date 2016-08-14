@@ -114,6 +114,9 @@ distclean: clean
 flash: $(HEX)
 	stm32flash -w $< -v $(SERIAL)
 
+flash-stlink: $(ELF)
+	openocd -f interface/stlink-v2.cfg -c "transport select hla_swd; reset_config none separate" -f $(OOCD_TARGET) -c "program $(ELF) verify reset exit"
+
 flash-dfu: $(BIN)
 	dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D $<
 
