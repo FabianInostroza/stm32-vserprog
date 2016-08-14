@@ -384,7 +384,9 @@ int main(void) {
 
 /* STM32F0x2 has internal pullup and does not need AFIO */
 #ifndef STM32F0
+  #ifdef BOARD_RCC_USB_PULLUP
   rcc_periph_clock_enable(BOARD_RCC_USB_PULLUP);
+  #endif
   rcc_periph_clock_enable(RCC_AFIO); /* For SPI */
 #endif /* STM32F0 */
 
@@ -393,7 +395,7 @@ int main(void) {
 #endif
 
 /* Setup GPIO to pull up the D+ high. (STM32F0x2 has internal pullup.) */
-#ifndef STM32F0
+#if !defined(STM32F0) && defined(BOARD_PORT_USB_PULLUP) && defined(BOARD_PIN_USB_PULLUP)
   gpio_set_mode(BOARD_PORT_USB_PULLUP, GPIO_MODE_OUTPUT_2_MHZ, GPIO_CNF_OUTPUT_PUSHPULL, BOARD_PIN_USB_PULLUP);
 #if BOARD_USB_HIGH_IS_PULLUP
   gpio_set(BOARD_PORT_USB_PULLUP, BOARD_PIN_USB_PULLUP);
